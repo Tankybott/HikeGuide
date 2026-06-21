@@ -1,4 +1,4 @@
-<img width="1916" height="942" alt="image" src="https://github.com/user-attachments/assets/e3c385a6-e9e6-477d-94b5-54e4d3cf362d" /># HikeGuide
+# HikeGuide
 
 A hiking trail portal built as a portfolio project for a Laravel course in my studies programme. HikeGuide lets users discover hiking regions and trails, leave photo reviews, and propose new hikes, while giving administrators a full content management panel. Responsive for mobile and desktop
 
