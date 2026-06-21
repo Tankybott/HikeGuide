@@ -9,6 +9,7 @@ use App\Models\Hike;
 use App\Models\HikeDraft;
 use App\Models\Region;
 use App\Services\HikeCreator;
+use App\Services\HikeDraftRemover;
 use App\Services\HikeRemover;
 use App\Services\HikeUpdater;
 use Illuminate\Http\RedirectResponse;
@@ -21,6 +22,7 @@ class HikeAdminController extends Controller
         private HikeCreator $hikeCreator,
         private HikeUpdater $hikeUpdater,
         private HikeRemover $hikeRemover,
+        private HikeDraftRemover $hikeDraftRemover,
     ) {}
 
     public function index(Request $request): View
@@ -55,15 +57,13 @@ class HikeAdminController extends Controller
         $data['needs_climbing_equipment'] = $request->boolean('needs_climbing_equipment');
         $data['needs_helmet'] = $request->boolean('needs_helmet');
 
-        $this->hikeCreator->create(
-            $data,
-            $request->file('photos', []),
-            $request->input('main_photo'),
-        );
+        $this->hikeCreator->create($data, $request->file('photos', []), $request->input('main_photo'));
 
         if ($request->filled('draft_id')) {
             $draft = HikeDraft::find($request->integer('draft_id'));
-            $draft?->delete();
+            if ($draft) {
+                $this->hikeDraftRemover->remove($draft);
+            }
         }
 
         return redirect()->route('admin.hikes.index')->with('success', 'Hike created.');
@@ -85,13 +85,7 @@ class HikeAdminController extends Controller
         $data['needs_climbing_equipment'] = $request->boolean('needs_climbing_equipment');
         $data['needs_helmet'] = $request->boolean('needs_helmet');
 
-        $this->hikeUpdater->update(
-            $hike,
-            $data,
-            $request->file('photos', []),
-            $request->input('delete_photos', []),
-            $request->input('main_photo'),
-        );
+        $this->hikeUpdater->update($hike, $data, $request->file('photos', []), $request->input('delete_photos', []), $request->input('main_photo'));
 
         return redirect()->route('admin.hikes.index')->with('success', 'Hike updated.');
     }

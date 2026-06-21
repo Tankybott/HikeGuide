@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRegionRequest;
 use App\Http\Requests\UpdateRegionRequest;
 use App\Models\HikeDraft;
 use App\Models\Region;
+use App\Services\HikeDraftBinder;
 use App\Services\RegionCreator;
 use App\Services\RegionRemover;
 use App\Services\RegionUpdater;
@@ -21,6 +22,7 @@ class RegionAdminController extends Controller
         private RegionCreator $regionCreator,
         private RegionUpdater $regionUpdater,
         private RegionRemover $regionRemover,
+        private HikeDraftBinder $hikeDraftBinder,
     ) {}
 
     public function index(Request $request): View
@@ -57,7 +59,7 @@ class RegionAdminController extends Controller
         if ($request->filled('draft_id')) {
             $draft = HikeDraft::find($request->integer('draft_id'));
             if ($draft) {
-                $draft->update(['region_id' => $region->id]);
+                $this->hikeDraftBinder->bind($draft, $region->id);
                 return redirect()->route('admin.drafts.show', $draft)->with('success', 'Region created and linked to draft.');
             }
         }
@@ -72,7 +74,6 @@ class RegionAdminController extends Controller
 
         return view('admin.regions.form', ['region' => $region, 'countries' => $countries, 'draft' => null]);
     }
-
 
     public function update(UpdateRegionRequest $request, Region $region): RedirectResponse
     {

@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BindDraftRegionRequest;
 use App\Models\HikeDraft;
 use App\Models\Region;
+use App\Services\HikeDraftBinder;
+use App\Services\HikeDraftRemover;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HikeDraftAdminController extends Controller
 {
+    public function __construct(
+        private HikeDraftBinder $hikeDraftBinder,
+        private HikeDraftRemover $hikeDraftRemover,
+    ) {}
+
     public function index(): View
     {
         $drafts = HikeDraft::with('user')
@@ -28,20 +35,16 @@ class HikeDraftAdminController extends Controller
         return view('admin.drafts.show', compact('draft', 'regions'));
     }
 
-    public function bindRegion(Request $request, HikeDraft $draft): RedirectResponse
+    public function bindRegion(BindDraftRegionRequest $request, HikeDraft $draft): RedirectResponse
     {
-        $request->validate([
-            'region_id' => ['required', 'integer', 'exists:regions,id'],
-        ]);
-
-        $draft->update(['region_id' => $request->integer('region_id')]);
+        $this->hikeDraftBinder->bind($draft, $request->integer('region_id'));
 
         return redirect()->route('admin.drafts.show', $draft)->with('success', 'Region linked to draft.');
     }
 
     public function destroy(HikeDraft $draft): RedirectResponse
     {
-        $draft->delete();
+        $this->hikeDraftRemover->remove($draft);
 
         return redirect()->route('admin.drafts.index')->with('success', 'Draft deleted.');
     }
