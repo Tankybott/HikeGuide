@@ -1,6 +1,6 @@
 # HikeGuide
 
-A hiking trail portal built as a portfolio project for a Laravel course in my studies programme. HikeGuide lets users discover hiking regions and trails, leave photo reviews, and propose new hikes, while giving administrators a full content management panel.
+A hiking trail portal built as a portfolio project for a Laravel course in my studies programme. HikeGuide lets users discover hiking regions and trails, leave photo reviews, and propose new hikes, while giving administrators a full content management panel. Responsive for mobile and desktop
 
 ---
 
@@ -24,7 +24,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Filter by country — dropdown populated only from countries that have actual data
 
 ---
-<!-- screenshot: regions index page -->
+<img width="1915" height="944" alt="image" src="https://github.com/user-attachments/assets/fd2004ca-9bf2-4532-abe3-4654282f03f6" />
 
 &nbsp;
 
@@ -37,7 +37,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - List of all hikes belonging to the region with difficulty badges
 
 ---
-<!-- screenshot: region show page -->
+<img width="1917" height="944" alt="image" src="https://github.com/user-attachments/assets/30476390-9847-4b76-bc6d-ef7d918bdc06" />
 
 &nbsp;
 
@@ -48,7 +48,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Propose a Hike button (authenticated users) — inline with filters on desktop, full-width above search on mobile
 
 ---
-<!-- screenshot: hikes index page -->
+<img width="1918" height="947" alt="image" src="https://github.com/user-attachments/assets/4f6a73db-70b0-4458-a2a0-63cdb0cb57ee" />
 
 &nbsp;
 
@@ -60,7 +60,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Reviews section with average star score
 
 ---
-<!-- screenshot: hike show page -->
+<img width="1916" height="942" alt="image" src="https://github.com/user-attachments/assets/286467a0-5fe9-48c6-8375-eee76d748415" />
 
 &nbsp;
 
@@ -75,7 +75,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Admins see a Delete button on every review
 
 ---
-<!-- screenshot: review form and review cards -->
+<img width="1917" height="947" alt="image" src="https://github.com/user-attachments/assets/3b00ad3c-3cbd-4a09-a3e4-83b5fc8a33d0" />
 
 &nbsp;
 
@@ -86,7 +86,7 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Can suggest a new region name or select an existing one
 
 ---
-<!-- screenshot: draft proposal form -->
+<img width="1915" height="947" alt="image" src="https://github.com/user-attachments/assets/b44404f9-6480-4be0-878b-26ca695c2db9" />
 
 &nbsp;
 
@@ -98,8 +98,6 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Once a region is assigned, proceed to create the hike (form pre-filled from draft)
 - Draft is automatically deleted after the hike is created
 
----
-<!-- screenshot: admin draft show page -->
 
 &nbsp;
 
@@ -111,9 +109,6 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Delete individual photos on edit
 - Search with live AJAX table
 
----
-<!-- screenshot: admin regions/hikes index and form -->
-
 &nbsp;
 
 ---
@@ -122,8 +117,4 @@ A hiking trail portal built as a portfolio project for a Laravel course in my st
 - Table of all non-admin users with search by nickname or email
 - One-click permanent ban / unban with status badge
 
----
-<!-- screenshot: admin users page -->
-
-&nbsp;
 
