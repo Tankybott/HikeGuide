@@ -14,7 +14,6 @@
         update();
     "
 >
-    {{-- Parallax background (extends beyond container so movement doesn't show edges) --}}
     <div
         class="absolute bg-center bg-cover"
         style="top: -40%; bottom: -40%; left: 0; right: 0; filter: blur(3px); background-image: url('{{ $image }}');"

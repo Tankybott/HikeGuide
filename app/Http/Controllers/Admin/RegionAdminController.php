@@ -8,10 +8,10 @@ use App\Http\Requests\UpdateRegionRequest;
 use App\Models\HikeDraft;
 use App\Models\Region;
 use App\Services\HikeDraftBinder;
+use App\Services\RegionAdminProvider;
 use App\Services\RegionCreator;
 use App\Services\RegionRemover;
 use App\Services\RegionUpdater;
-use App\Support\CountryList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,15 +23,13 @@ class RegionAdminController extends Controller
         private RegionUpdater $regionUpdater,
         private RegionRemover $regionRemover,
         private HikeDraftBinder $hikeDraftBinder,
+        private RegionAdminProvider $regionAdminProvider,
     ) {}
 
     public function index(Request $request): View
     {
-        $search = $request->get('search', '');
-
-        $regions = Region::when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
-            ->orderBy('name')
-            ->get();
+        $search  = $request->get('search', '');
+        $regions = $this->regionAdminProvider->getFiltered($search);
 
         if ($request->ajax()) {
             return view('admin.regions.partials.table', compact('regions', 'search'));
@@ -42,10 +40,11 @@ class RegionAdminController extends Controller
 
     public function create(Request $request): View
     {
-        $countries = CountryList::get();
-        $draft = $request->filled('draft_id') ? HikeDraft::find($request->integer('draft_id')) : null;
+        $data = $this->regionAdminProvider->getCreateData(
+            $request->filled('draft_id') ? $request->integer('draft_id') : null
+        );
 
-        return view('admin.regions.form', ['region' => null, 'countries' => $countries, 'draft' => $draft]);
+        return view('admin.regions.form', array_merge($data, ['region' => null]));
     }
 
     public function store(StoreRegionRequest $request): RedirectResponse
@@ -69,10 +68,9 @@ class RegionAdminController extends Controller
 
     public function edit(Region $region): View
     {
-        $region->load('photos');
-        $countries = CountryList::get();
+        $data = $this->regionAdminProvider->getEditData($region);
 
-        return view('admin.regions.form', ['region' => $region, 'countries' => $countries, 'draft' => null]);
+        return view('admin.regions.form', array_merge($data, ['draft' => null]));
     }
 
     public function update(UpdateRegionRequest $request, Region $region): RedirectResponse

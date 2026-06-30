@@ -7,7 +7,7 @@ use App\Http\Requests\StoreHikeRequest;
 use App\Http\Requests\UpdateHikeRequest;
 use App\Models\Hike;
 use App\Models\HikeDraft;
-use App\Models\Region;
+use App\Services\HikeAdminProvider;
 use App\Services\HikeCreator;
 use App\Services\HikeDraftRemover;
 use App\Services\HikeRemover;
@@ -23,16 +23,13 @@ class HikeAdminController extends Controller
         private HikeUpdater $hikeUpdater,
         private HikeRemover $hikeRemover,
         private HikeDraftRemover $hikeDraftRemover,
+        private HikeAdminProvider $hikeAdminProvider,
     ) {}
 
     public function index(Request $request): View
     {
         $search = $request->get('search', '');
-
-        $hikes = Hike::with('region')
-            ->when($search, fn($q) => $q->where('title', 'like', "%{$search}%"))
-            ->orderBy('title')
-            ->get();
+        $hikes  = $this->hikeAdminProvider->getFiltered($search);
 
         if ($request->ajax()) {
             return view('admin.hikes.partials.table', compact('hikes', 'search'));
@@ -43,10 +40,11 @@ class HikeAdminController extends Controller
 
     public function create(Request $request): View
     {
-        $regions = Region::orderBy('name')->get();
-        $draft = $request->filled('draft_id') ? HikeDraft::find($request->integer('draft_id')) : null;
+        $data = $this->hikeAdminProvider->getCreateData(
+            $request->filled('draft_id') ? $request->integer('draft_id') : null
+        );
 
-        return view('admin.hikes.form', ['hike' => null, 'regions' => $regions, 'draft' => $draft]);
+        return view('admin.hikes.form', array_merge($data, ['hike' => null]));
     }
 
     public function store(StoreHikeRequest $request): RedirectResponse
@@ -71,10 +69,9 @@ class HikeAdminController extends Controller
 
     public function edit(Hike $hike): View
     {
-        $hike->load('photos');
-        $regions = Region::orderBy('name')->get();
+        $data = $this->hikeAdminProvider->getEditData($hike);
 
-        return view('admin.hikes.form', ['hike' => $hike, 'regions' => $regions, 'draft' => null]);
+        return view('admin.hikes.form', array_merge($data, ['draft' => null]));
     }
 
     public function update(UpdateHikeRequest $request, Hike $hike): RedirectResponse

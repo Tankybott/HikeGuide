@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BindDraftRegionRequest;
 use App\Models\HikeDraft;
-use App\Models\Region;
+use App\Services\HikeDraftAdminProvider;
 use App\Services\HikeDraftBinder;
 use App\Services\HikeDraftRemover;
 use Illuminate\Http\RedirectResponse;
@@ -16,23 +16,21 @@ class HikeDraftAdminController extends Controller
     public function __construct(
         private HikeDraftBinder $hikeDraftBinder,
         private HikeDraftRemover $hikeDraftRemover,
+        private HikeDraftAdminProvider $hikeDraftAdminProvider,
     ) {}
 
     public function index(): View
     {
-        $drafts = HikeDraft::with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $drafts = $this->hikeDraftAdminProvider->getAll();
 
         return view('admin.drafts.index', compact('drafts'));
     }
 
     public function show(HikeDraft $draft): View
     {
-        $draft->load(['user', 'region']);
-        $regions = Region::orderBy('name')->get();
+        $data = $this->hikeDraftAdminProvider->getShowData($draft);
 
-        return view('admin.drafts.show', compact('draft', 'regions'));
+        return view('admin.drafts.show', $data);
     }
 
     public function bindRegion(BindDraftRegionRequest $request, HikeDraft $draft): RedirectResponse

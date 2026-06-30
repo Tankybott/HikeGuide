@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHikeDraftRequest;
-use App\Models\Region;
 use App\Services\HikeDraftCreator;
+use App\Services\HikeDraftProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class HikeDraftController extends Controller
 {
-    public function __construct(private HikeDraftCreator $hikeDraftCreator) {}
+    public function __construct(
+        private HikeDraftCreator $hikeDraftCreator,
+        private HikeDraftProvider $hikeDraftProvider,
+    ) {}
 
     public function create(): View
     {
-        $regions = Region::orderBy('name')->get();
-
-        return view('drafts.create', compact('regions'));
+        return view('drafts.create', $this->hikeDraftProvider->getCreateData());
     }
 
     public function store(StoreHikeDraftRequest $request): RedirectResponse
